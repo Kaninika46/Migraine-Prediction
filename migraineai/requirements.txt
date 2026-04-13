@@ -1,6 +1,6 @@
 flask
 pandas
-scikit-learn
 numpy
 gunicorn
 Werkzeung
+scikit-learn==1.3.2
