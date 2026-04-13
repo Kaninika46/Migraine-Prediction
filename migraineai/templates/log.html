@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Symptom Diary — MigraineAI{% endblock %}
+{% block content %}
+<section class="log-page">
+  <div class="dash-header"><div><h2>Symptom <span class="grad">Diary</span></h2><p class="muted">Log today's headache to build your personal health record</p></div></div>
+  <div class="log-grid">
+    <div class="form-card">
+      <h3 style="margin-bottom:1.5rem">Log Today's Episode</h3>
+      <div class="form-group"><label>Headache Severity (0–10)</label><div class="range-row"><input type="range" id="severity" min="0" max="10" value="0" oninput="document.getElementById('sev_val').textContent=this.value"/><div class="range-val" id="sev_val">0</div></div></div>
+      <div class="form-group"><label>Duration (hours)</label><input type="number" id="duration_hrs" placeholder="e.g. 4" min="0" max="72" step="0.5"/></div>
+      <div class="form-group"><label>Possible Triggers (comma separated)</label><input type="text" id="triggers" placeholder="e.g. stress, bright light, skipped meal"/></div>
+      <div class="form-group"><label>Medication Taken</label><input type="text" id="medication" placeholder="e.g. Ibuprofen 400mg"/></div>
+      <div class="form-group"><label>Notes</label><textarea id="notes" rows="3" placeholder="Any additional observations..."></textarea></div>
+      <button class="btn-primary full" onclick="saveLog()">Save Entry →</button>
+      <div id="logMsg" style="display:none;margin-top:1rem;color:var(--accent3);text-align:center">✅ Entry saved!</div>
+    </div>
+    <div class="history-card" style="padding:1.8rem">
+      <div class="chart-title" style="margin-bottom:1.2rem">Recent Entries</div>
+      {% if logs %}
+        {% for l in logs %}
+        <div class="log-entry">
+          <div class="log-top"><span class="log-date">{{ l.logged_at[:16] }}</span><span class="severity-badge sev-{{ l.headache_severity }}">Severity: {{ l.headache_severity }}/10</span></div>
+          {% if l.triggers %}<div class="log-detail">⚡ <strong>Triggers:</strong> {{ l.triggers }}</div>{% endif %}
+          {% if l.medication_taken %}<div class="log-detail">💊 <strong>Medication:</strong> {{ l.medication_taken }}</div>{% endif %}
+          {% if l.duration_hrs %}<div class="log-detail">⏱ <strong>Duration:</strong> {{ l.duration_hrs }} hrs</div>{% endif %}
+          {% if l.notes %}<div class="log-detail muted" style="font-style:italic">{{ l.notes }}</div>{% endif %}
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty-state"><p>No entries yet. Log your first episode above.</p></div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+function saveLog() {
+  fetch('/api/log', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      severity:     parseInt(document.getElementById('severity').value),
+      duration_hrs: parseFloat(document.getElementById('duration_hrs').value)||0,
+      triggers:     document.getElementById('triggers').value,
+      medication:   document.getElementById('medication').value,
+      notes:        document.getElementById('notes').value
+    })
+  }).then(r=>r.json()).then(()=>{
+    document.getElementById('logMsg').style.display='block';
+    setTimeout(()=>location.reload(),1200);
+  });
+}
+</script>
+{% endblock %}

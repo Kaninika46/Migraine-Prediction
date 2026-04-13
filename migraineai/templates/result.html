@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Result — MigraineAI{% endblock %}
+{% block content %}
+<section class="result-page">
+  <div class="result-card">
+    <div class="result-top">
+      <div class="result-badge {{ a.risk_category | lower }}">{{ a.risk_category }} Risk</div>
+      <div class="result-date">{{ a.submitted_at[:16] }}</div>
+    </div>
+    <div class="result-type">
+      <div class="muted" style="font-size:.8rem;text-transform:uppercase;letter-spacing:.1em">Predicted Migraine Type</div>
+      <h2 class="grad">{{ a.predicted_type }}</h2>
+    </div>
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-label">Risk Score</div>
+        <div class="metric-big {% if a.risk_category=='High' %}red{% elif a.risk_category=='Moderate' %}yellow{% else %}green{% endif %}">{{ a.risk_score }}<span style="font-size:1rem">/100</span></div>
+        <div class="metric-bar"><div class="metric-fill" style="width:{{ a.risk_score }}%;background:{% if a.risk_category=='High' %}#f76a6a{% elif a.risk_category=='Moderate' %}#f7d26a{% else %}#6af7a2{% endif %}"></div></div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">30-day Attack Probability</div>
+        <div class="metric-big orange">{{ a.attack_prob }}<span style="font-size:1rem">%</span></div>
+        <div class="metric-bar"><div class="metric-fill" style="width:{{ a.attack_prob }}%;background:#f7a26a"></div></div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Chronic Progression Risk</div>
+        <div class="metric-big red">{{ a.chronic_risk }}<span style="font-size:1rem">%</span></div>
+        <div class="metric-bar"><div class="metric-fill" style="width:{{ a.chronic_risk }}%;background:#f76a6a"></div></div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Stress Level</div>
+        <div class="metric-big purple">{{ a.stress_level }}<span style="font-size:1rem">/8</span></div>
+        <div class="metric-bar"><div class="metric-fill" style="width:{{ (a.stress_level/8*100)|int }}%;background:#7c6af7"></div></div>
+      </div>
+    </div>
+    {% if recs %}
+    <div class="recs-section">
+      <h3>💡 Personalised Recommendations</h3>
+      <div class="rec-list">
+        {% for r in recs %}
+        <div class="rec-item"><span class="rec-icon">{{ r.icon }}</span><span>{{ r.message }}</span></div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+    <div class="result-actions">
+      <a href="{{ url_for('assess') }}"    class="btn-primary">Take New Assessment →</a>
+      <a href="{{ url_for('dashboard') }}" class="btn-outline">← Dashboard</a>
+      <a href="{{ url_for('log_page') }}"  class="btn-outline">Log Today's Symptoms</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

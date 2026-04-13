@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}MigraineAI — Personalized Risk Stratification{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">● AI-Powered Neurological Health</div>
+    <h1>Predict & Prevent<br><span class="grad">Migraine Progression</span><br>Before It Happens</h1>
+    <p class="hero-desc">An intelligent AI system that integrates your neurological, lifestyle, and sleep data to compute your personal migraine risk index.</p>
+    <div class="hero-btns">
+      <a href="{{ url_for('register') }}" class="btn-primary">Start Free Assessment →</a>
+      <a href="#features" class="btn-outline">See How It Works</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item"><div class="stat-num">30+</div><div class="stat-label">Features Analyzed</div></div>
+      <div class="stat-item"><div class="stat-num">2</div><div class="stat-label">Kaggle Datasets</div></div>
+      <div class="stat-item"><div class="stat-num">90%</div><div class="stat-label">Model Accuracy</div></div>
+    </div>
+  </div>
+</section>
+<section class="features" id="features">
+  <div class="section-tag">What We Offer</div>
+  <h2 class="section-title">Complete Migraine Intelligence</h2>
+  <p class="section-sub">From data to prevention — AI-driven health monitoring with continuous tracking.</p>
+  <div class="features-grid">
+    <div class="feature-card"><div class="feat-icon purple">🧠</div><div class="feat-title">Risk Stratification</div><div class="feat-desc">Classifies into Low, Moderate, or High risk using Random Forest trained on real Kaggle data.</div></div>
+    <div class="feature-card"><div class="feat-icon teal">📈</div><div class="feat-title">Trend Monitoring</div><div class="feat-desc">Every assessment is saved. Watch your risk score evolve over time with interactive charts.</div></div>
+    <div class="feature-card"><div class="feat-icon orange">📓</div><div class="feat-title">Symptom Diary</div><div class="feat-desc">Log daily headache severity, triggers, and medication. Build your personal health record.</div></div>
+    <div class="feature-card"><div class="feat-icon green">💡</div><div class="feat-title">AI Recommendations</div><div class="feat-desc">Tailored lifestyle adjustments generated from your weakest health domains.</div></div>
+    <div class="feature-card"><div class="feat-icon red">🔁</div><div class="feat-title">Continuous Assessment</div><div class="feat-desc">Re-assess anytime. Every result is stored so every change is tracked.</div></div>
+    <div class="feature-card"><div class="feat-icon yellow">🗄️</div><div class="feat-title">Secure Database</div><div class="feat-desc">All data stored in SQLite with user accounts. Your data, always private.</div></div>
+  </div>
+</section>
+{% endblock %}

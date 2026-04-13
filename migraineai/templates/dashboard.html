@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — MigraineAI{% endblock %}
+{% block head %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+{% endblock %}
+{% block content %}
+<section class="dashboard">
+  <div class="dash-header">
+    <div>
+      <h2>Welcome back, <span class="grad">{{ user_name }}</span></h2>
+      <p class="muted">Here's your migraine health overview</p>
+    </div>
+    <a href="{{ url_for('assess') }}" class="btn-primary">+ New Assessment</a>
+  </div>
+
+  <div class="summary-grid">
+    <div class="summary-card">
+      <div class="sum-icon purple">📊</div>
+      <div>
+        <div class="sum-num">{{ total_assessments }}</div>
+        <div class="sum-label">Total Assessments</div>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="sum-icon 
+        {% if latest and latest.risk_category == 'High' %}red
+        {% elif latest and latest.risk_category == 'Moderate' %}yellow
+        {% else %}green{% endif %}">
+        📈
+      </div>
+      <div>
+        <div class="sum-num">
+          {% if latest %}{{ latest.risk_score }}/100{% else %}—{% endif %}
+        </div>
+        <div class="sum-label">
+          {% if latest %}{{ latest.risk_category }} Risk{% else %}Latest Risk Score{% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="sum-icon teal">📓</div>
+      <div>
+        <div class="sum-num">{{ symptom_sum.total_entries or 0 }}</div>
+        <div class="sum-label">Diary Entries</div>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="sum-icon orange">💥</div>
+      <div>
+        <div class="sum-num">{{ symptom_sum.avg_severity or '—' }}</div>
+        <div class="sum-label">Avg Headache Severity</div>
+      </div>
+    </div>
+  </div>
+
+  {% if total_assessments > 0 %}
+  <div class="chart-grid">
+    <div class="chart-card">
+      <div class="chart-title">Risk Score Over Time</div>
+      <canvas id="riskChart" height="200"></canvas>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Attack Probability Trend</div>
+      <canvas id="attackChart" height="200"></canvas>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="history-card">
+    <div class="history-header">
+      <div class="chart-title">Assessment History</div>
+      <a href="{{ url_for('assess') }}" class="btn-outline sm">+ New</a>
+    </div>
+    {% if assessments %}
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th><th>Migraine Type</th><th>Risk Score</th><th>Category</th><th>Attack Prob</th><th>Chronic Risk</th><th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for a in assessments %}
+          <tr>
+            <td>{{ a.submitted_at[:16] }}</td>
+            <td>{{ a.predicted_type }}</td>
+            <td>
+              <div class="score-pill 
+                {% if a.risk_category == 'High' %}red
+                {% elif a.risk_category == 'Moderate' %}yellow
+                {% else %}green{% endif %}">
+                {{ a.risk_score }}
+              </div>
+            </td>
+            <td><span class="badge-{{ a.risk_category | lower }}">{{ a.risk_category }}</span></td>
+            <td>{{ a.attack_prob }}%</td>
+            <td>{{ a.chronic_risk }}%</td>
+            <td><a href="{{ url_for('result', aid=a.id) }}" class="link-btn">View →</a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <p>No assessments yet.</p>
+      <a href="{{ url_for('assess') }}" class="btn-primary">Take Your First Assessment →</a>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+fetch('/api/trends').then(r=>r.json()).then(data => {
+  if (!data.length) return;
+  const labels  = data.map(d => d.submitted_at.slice(0,10));
+  const mkChart = (id, label, vals, color) => new Chart(document.getElementById(id), {
+    type: 'line',
+    data: { labels, datasets: [{ label, data: vals, borderColor: color, backgroundColor: color+'22', fill: true, tension: 0.4, pointRadius: 5, pointBackgroundColor: color }] },
+    options: { responsive: true, plugins: { legend: { labels: { color:'#aaa' } } }, scales: { x: { ticks:{color:'#777'}, grid:{color:'#222'} }, y: { min:0, max:100, ticks:{color:'#777'}, grid:{color:'#222'} } } }
+  });
+  mkChart('riskChart',   'Risk Score',          data.map(d=>d.risk_score),  '#7c6af7');
+  mkChart('attackChart', 'Attack Probability %', data.map(d=>d.attack_prob), '#f7a26a');
+});
+</script>
+{% endblock %}

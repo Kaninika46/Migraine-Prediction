@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}Assessment — MigraineAI{% endblock %}
+{% block content %}
+<section class="assess-page">
+  <div class="assess-header"><h2>New Risk Assessment</h2><p class="muted">Fill in all sections. Takes about 3 minutes.</p></div>
+  <div class="form-card">
+    <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+    <div class="step-tabs">
+      <button class="step-tab active" data-step="1">1. Migraine Profile</button>
+      <button class="step-tab" data-step="2">2. Symptoms</button>
+      <button class="step-tab" data-step="3">3. Sleep & Lifestyle</button>
+    </div>
+    <form id="assessForm">
+      <!-- STEP 1 -->
+      <div class="step-content active" id="step1">
+        <div class="form-grid">
+          <div class="form-group"><label>Age</label><input type="number" name="age" placeholder="e.g. 23" min="10" max="90" required/></div>
+          <div class="form-group"><label>Attack Frequency (per month)</label>
+            <select name="frequency" required><option value="">Select...</option><option value="1">1 — Rare</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6–7</option><option value="7">8–10</option><option value="8">10+ (Chronic)</option></select>
+          </div>
+          <div class="form-group"><label>Typical Duration</label>
+            <select name="duration" required><option value="">Select...</option><option value="1">Under 4 hours</option><option value="2">4–24 hours</option><option value="3">More than 24 hours</option></select>
+          </div>
+          <div class="form-group"><label>Pain Location</label>
+            <select name="location" required><option value="">Select...</option><option value="1">Unilateral (one side)</option><option value="2">Bilateral (both sides)</option></select>
+          </div>
+          <div class="form-group"><label>Pain Character</label>
+            <select name="character" required><option value="">Select...</option><option value="1">Throbbing / Pulsating</option><option value="2">Pressing / Tightening</option><option value="3">Stabbing</option></select>
+          </div>
+          <div class="form-group"><label>Pain Intensity</label>
+            <select name="intensity" required><option value="">Select...</option><option value="0">Mild</option><option value="1">Moderate</option><option value="2">Severe</option><option value="3">Excruciating</option></select>
+          </div>
+          <div class="form-group"><label>Family History of Migraine</label>
+            <select name="dpf" required><option value="0">No</option><option value="1">Yes</option></select>
+          </div>
+        </div>
+        <div class="step-nav"><div></div><button type="button" class="btn-primary" onclick="goStep(2)">Next: Symptoms →</button></div>
+      </div>
+      <!-- STEP 2 -->
+      <div class="step-content" id="step2">
+        <p class="muted" style="margin-bottom:1.5rem">Check all symptoms you experience during a migraine attack:</p>
+        <div class="symptom-grid">
+          <label class="checkbox-card"><input type="checkbox" name="nausea"      value="1"/><span>🤢 Nausea</span></label>
+          <label class="checkbox-card"><input type="checkbox" name="vomit"       value="1"/><span>🤮 Vomiting</span></label>
+          <label class="checkbox-card"><input type="checkbox" name="phonophobia" value="1"/><span>🔊 Sound sensitivity</span></label>
+          <label class="checkbox-card"><input type="checkbox" name="photophobia" value="1"/><span>💡 Light sensitivity</span></label>
+          <label class="checkbox-card"><input type="checkbox" name="visual"      value="1"/><span>👁️ Visual aura</span></label>
+          <label class="checkbox-card"><input type="checkbox" name="sensory"     value="1"/><span>🖐️ Sensory disturbances</span></label>
+          <label class="checkbox-card"><input type="checkbox" name="dysphasia"   value="1"/><span>🗣️ Speech difficulty</span></label>
+          <label class="checkbox-card"><input type="checkbox" name="dysarthria"  value="1"/><span>💬 Slurred speech</span></label>
+          <label class="checkbox-card"><input type="checkbox" name="vertigo"     value="1"/><span>🌀 Vertigo / dizziness</span></label>
+          <label class="checkbox-card"><input type="checkbox" name="tinnitus"    value="1"/><span>👂 Tinnitus</span></label>
+          <label class="checkbox-card"><input type="checkbox" name="hypoacusis"  value="1"/><span>🔕 Reduced hearing</span></label>
+          <label class="checkbox-card"><input type="checkbox" name="diplopia"    value="1"/><span>👀 Double vision</span></label>
+          <label class="checkbox-card"><input type="checkbox" name="defect"      value="1"/><span>🧩 Visual field defect</span></label>
+          <label class="checkbox-card"><input type="checkbox" name="ataxia"      value="1"/><span>🚶 Loss of coordination</span></label>
+          <label class="checkbox-card"><input type="checkbox" name="conscience"  value="1"/><span>😵 Altered consciousness</span></label>
+          <label class="checkbox-card"><input type="checkbox" name="paresthesia" value="1"/><span>⚡ Tingling / numbness</span></label>
+        </div>
+        <div class="step-nav"><button type="button" class="btn-outline" onclick="goStep(1)">← Back</button><button type="button" class="btn-primary" onclick="goStep(3)">Next: Sleep & Lifestyle →</button></div>
+      </div>
+      <!-- STEP 3 -->
+      <div class="step-content" id="step3">
+        <div class="form-grid">
+          <div class="form-group"><label>Sleep Duration (hrs/night)</label><div class="range-row"><input type="range" name="sleep_duration" min="3" max="10" step="0.5" value="7" oninput="document.getElementById('sl_val').textContent=this.value"/><div class="range-val" id="sl_val">7</div></div></div>
+          <div class="form-group"><label>Sleep Quality (1–10)</label><div class="range-row"><input type="range" name="sleep_quality" min="1" max="10" value="6" oninput="document.getElementById('sq_val').textContent=this.value"/><div class="range-val" id="sq_val">6</div></div></div>
+          <div class="form-group"><label>Stress Level (1–8)</label><div class="range-row"><input type="range" name="stress_level" min="1" max="8" value="4" oninput="document.getElementById('st_val').textContent=this.value"/><div class="range-val" id="st_val">4</div></div></div>
+          <div class="form-group"><label>Physical Activity (0–100)</label><div class="range-row"><input type="range" name="physical_activity" min="0" max="100" value="50" oninput="document.getElementById('pa_val').textContent=this.value"/><div class="range-val" id="pa_val">50</div></div></div>
+          <div class="form-group"><label>Systolic Blood Pressure (mmHg)</label><input type="number" name="bp_systolic" placeholder="e.g. 120" min="80" max="200" required/></div>
+          <div class="form-group"><label>Heart Rate (bpm)</label><input type="number" name="heart_rate" placeholder="e.g. 72" min="40" max="150" required/></div>
+          <div class="form-group"><label>Daily Steps</label><input type="number" name="daily_steps" placeholder="e.g. 7000" min="0" max="30000"/></div>
+          <div class="form-group"><label>BMI</label><input type="number" name="bmi" placeholder="e.g. 22.5" step="0.1" min="10" max="50"/></div>
+          <div class="form-group"><label>Sleep Disorder</label><select name="sleep_disorder"><option value="0">None</option><option value="1">Insomnia</option><option value="2">Sleep Apnea</option></select></div>
+        </div>
+        <div class="step-nav"><button type="button" class="btn-outline" onclick="goStep(2)">← Back</button><button type="button" class="btn-primary" onclick="submitForm()">Compute My Risk Index →</button></div>
+      </div>
+    </form>
+    <div id="loadingState" style="display:none;text-align:center;padding:3rem"><div class="spinner"></div><p style="margin-top:1rem;color:var(--muted)">Running AI model...</p></div>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/assess.js') }}"></script>{% endblock %}
