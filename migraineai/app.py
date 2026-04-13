@@ -2,11 +2,14 @@ from flask import (Flask, render_template, request, jsonify,
                    session, redirect, url_for)
 from functools import wraps
 import hashlib
+import os  # <--- Added this to read environment variables
 import database as db
 import model_engine as engine
 
 app = Flask(__name__)
-app.secret_key = "migraineai-secret-key-change-in-production"
+
+# Use an environment variable for the secret key, or a fallback for local dev
+app.secret_key = os.environ.get("SECRET_KEY", "migraineai-secret-key-change-in-production")
 
 db.init_db()
 
@@ -169,5 +172,9 @@ def api_trends():
 def api_history():
     return jsonify(db.get_user_assessments(session["user_id"]))
 
+# --- MODIFIED FOR DEPLOYMENT ---
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    # Render and other hosts use the 'PORT' environment variable
+    port = int(os.environ.get("PORT", 5000))
+    # host='0.0.0.0' is required to make the app reachable on the internet
+    app.run(host='0.0.0.0', port=port)
