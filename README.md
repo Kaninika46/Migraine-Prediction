@@ -4,7 +4,7 @@
 
 **Course:** ABAI1010L — Foundations of AI Programming using Python  
 **Institution:** Bennett University — School of Artificial Intelligence  
-**Team:** Kaninika Giri (A25ARIU0026) | Akshita Dey (A25ARIU0044)  
+**Team:** Kaninika Giri  | Akshita Dey 
 **Submitted to:** Dr. Shakshi Sharma  
 
 ---
