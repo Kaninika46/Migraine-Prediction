@@ -71,6 +71,22 @@ Both datasets are merged using **nearest-age join** (`pandas.merge_asof`) to cre
 - ✅ Daily Symptom Diary
 - ✅ SQLite Database Storage
 - ✅ Live Deployed on Render
+---
+-  ## 📂 Project Structure
+
+```text
+├── data/               # Dataset files
+├── model/              # Saved model files (.pkl / .h5)
+├── static/             # CSS, JavaScript, and UI assets
+├── templates/          # HTML templates for the web interface
+├── app.py              # Main application entry point
+├── database.py         # Database configuration and schemas
+├── model_engine.py     # Logic for AI predictions and processing
+├── train_model.py      # Script for training the ML model
+├── Procfile            # Configuration for deployment (Render/Heroku)
+├── requirements.txt    # Python dependencies
+├── runtime.txt         # Python version specification
+└── README.md           # Project documentation
 
 
 
